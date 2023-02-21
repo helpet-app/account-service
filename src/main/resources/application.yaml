@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: account-service
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-server
+      fail-fast: true
+      retry:
+        max-attempts: 20
+        initial-interval: 20000
+        max-interval: 10000
+#  data:
+#    redis:
+#      password: from Config Server: Vault
+#  datasource:
+#    url: from Config Server: Vault
+#    password: from Config Server: Vault
+#    username: from Config Server: Vault
+
+eureka:
+  client:
+    enabled: true
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URI}
+
+#auth:
+#  jwt:
+#    issuer: from Config Server: Git
+#    access-expires-in: from Config Server: Git
+#    refresh-expires-in: from Config Server: Git
+#  keys:
+#    access-token-public-key: from Config Server: Vault
+#    access-token-private-key: from Config Server: Vault
+#    refresh-token-public-key: from Config Server: Vault
+#    refresh-token-private-key: from Config Server: Vault
