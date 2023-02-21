@@ -15,8 +15,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 @Configuration
 public class AuthConfig {
     @Bean
-    DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService,
-                                                        PasswordEncoder passwordEncoder) {
+    DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
