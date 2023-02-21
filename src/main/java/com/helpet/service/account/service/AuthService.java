@@ -1,0 +1,93 @@
+package com.helpet.service.account.service;
+
+import com.helpet.exception.ConflictLocalizedException;
+import com.helpet.exception.NotFoundLocalizedException;
+import com.helpet.security.jwt.JwtPayloadExtractor;
+import com.helpet.service.account.store.model.Account;
+import com.helpet.service.account.store.model.Session;
+import com.helpet.service.account.web.dto.request.RefreshTokenRequest;
+import com.helpet.service.account.web.dto.request.SignInRequest;
+import com.helpet.service.account.web.dto.request.SignUpRequest;
+import com.helpet.service.account.web.dto.response.TokenResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
+import org.springframework.stereotype.Service;
+
+import java.util.UUID;
+
+@Service
+public class AuthService {
+    private final TokenService tokenService;
+
+    private final AccountService accountService;
+
+    private final SessionService sessionService;
+
+    private final DaoAuthenticationProvider daoAuthenticationProvider;
+
+    private final JwtAuthenticationProvider jwtRefreshTokenAuthenticationProvider;
+
+    @Autowired
+    public AuthService(TokenService tokenService,
+                       AccountService accountService,
+                       SessionService sessionService,
+                       DaoAuthenticationProvider daoAuthenticationProvider,
+                       @Qualifier("jwtRefreshTokenAuthenticationProvider") JwtAuthenticationProvider jwtRefreshTokenAuthenticationProvider) {
+        this.tokenService = tokenService;
+        this.accountService = accountService;
+        this.sessionService = sessionService;
+        this.daoAuthenticationProvider = daoAuthenticationProvider;
+        this.jwtRefreshTokenAuthenticationProvider = jwtRefreshTokenAuthenticationProvider;
+    }
+
+    public TokenResponse signUp(HttpServletRequest httpServletRequest, SignUpRequest signUpInfo) throws ConflictLocalizedException {
+        Account newAccount = accountService.createAccount(signUpInfo);
+
+        Session newSession = sessionService.createSession(newAccount.getId(), httpServletRequest, tokenService.getJwtConstants().getRefreshExpiresIn());
+
+        return tokenService.generateTokenResponse(newAccount, newSession);
+    }
+
+    public TokenResponse signIn(HttpServletRequest httpServletRequest, SignInRequest signInInfo) throws NotFoundLocalizedException {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(signInInfo.getUsername(),
+                                                                                                          signInInfo.getPassword());
+        daoAuthenticationProvider.authenticate(authenticationToken);
+
+        Account account = accountService.getAccountByUsername(signInInfo.getUsername());
+
+        Session newSession = sessionService.createSession(account.getId(), httpServletRequest, tokenService.getJwtConstants().getRefreshExpiresIn());
+
+        return tokenService.generateTokenResponse(account, newSession);
+    }
+
+    public TokenResponse refreshToken(HttpServletRequest httpServletRequest,
+                                      RefreshTokenRequest refreshTokenInfo) throws NotFoundLocalizedException {
+        BearerTokenAuthenticationToken authenticationToken = new BearerTokenAuthenticationToken(refreshTokenInfo.getRefreshToken());
+
+        Authentication authentication = jwtRefreshTokenAuthenticationProvider.authenticate(authenticationToken);
+
+        Jwt jwt = (Jwt) authentication.getCredentials();
+
+        UUID accountId = JwtPayloadExtractor.extractSubject(jwt);
+        UUID sessionId = JwtPayloadExtractor.extractSessionId(jwt);
+
+        sessionService.leaveAccountSession(accountId, sessionId);
+
+        Account account = accountService.getAccount(accountId);
+
+        Session newSession = sessionService.createSession(accountId, httpServletRequest, tokenService.getJwtConstants().getRefreshExpiresIn());
+
+        return tokenService.generateTokenResponse(account, newSession);
+    }
+
+    public void signOut(UUID accountId, UUID sessionId) throws NotFoundLocalizedException {
+        sessionService.leaveAccountSession(accountId, sessionId);
+    }
+}
