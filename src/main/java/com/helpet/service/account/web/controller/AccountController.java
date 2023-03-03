@@ -36,7 +36,7 @@ public class AccountController {
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
-    @PatchMapping("/change-password")
+    @PutMapping("/change-password")
     public ResponseEntity<ResponseBody> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest,
                                                    JwtAuthenticationToken jwtAuthenticationToken) {
         UUID accountId = JwtPayloadExtractor.extractSubject(jwtAuthenticationToken.getToken());
