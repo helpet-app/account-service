@@ -1,13 +1,17 @@
 package com.helpet.service.account.service;
 
 import com.helpet.exception.ConflictLocalizedException;
+import com.helpet.exception.ForbiddenLocalizedException;
 import com.helpet.exception.NotFoundLocalizedException;
 import com.helpet.service.account.service.error.ConflictLocalizedError;
+import com.helpet.service.account.service.error.ForbiddenLocalizedError;
 import com.helpet.service.account.service.error.NotFoundLocalizedError;
 import com.helpet.service.account.store.model.Account;
 import com.helpet.service.account.store.model.Role;
 import com.helpet.service.account.store.repository.AccountRepository;
 import com.helpet.service.account.web.dto.request.SignUpRequest;
+import com.helpet.service.account.web.dto.request.UpdatePasswordRequest;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +24,12 @@ public class AccountService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public AccountService(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
+    private final SessionService sessionService;
+
+    public AccountService(AccountRepository accountRepository, PasswordEncoder passwordEncoder, @Lazy SessionService sessionService) {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
+        this.sessionService = sessionService;
     }
 
     public Account getAccount(UUID id) throws NotFoundLocalizedException {
@@ -31,7 +38,7 @@ public class AccountService {
     }
 
     public Account getAccountByUsername(String username) throws NotFoundLocalizedException {
-        return accountRepository.findAccountByUsername(username)
+        return accountRepository.findAccountByUsernameIgnoreCase(username)
                                 .orElseThrow(() -> new NotFoundLocalizedException(NotFoundLocalizedError.ACCOUNT_WITH_GIVEN_USERNAME_DOES_NOT_EXIST));
     }
 
@@ -40,11 +47,11 @@ public class AccountService {
     }
 
     public boolean accountExistsByUsername(String username) {
-        return accountRepository.existsByUsername(username);
+        return accountRepository.existsByUsernameIgnoreCase(username);
     }
 
     public boolean accountExistsByEmail(String email) {
-        return accountRepository.existsByEmail(email);
+        return accountRepository.existsByEmailIgnoreCase(email);
     }
 
     public Account createAccount(SignUpRequest signUpInfo) throws ConflictLocalizedException {
@@ -58,12 +65,28 @@ public class AccountService {
 
         Account newAccount = Account.builder()
                                     .name(signUpInfo.getName())
-                                    .email(signUpInfo.getEmail())
-                                    .username(signUpInfo.getUsername())
+                                    .email(signUpInfo.getEmail().toLowerCase())
+                                    .username(signUpInfo.getUsername().toLowerCase())
                                     .password(passwordEncoder.encode(signUpInfo.getPassword()))
                                     .roles(Set.of(Role.USER))
                                     .build();
 
         return accountRepository.save(newAccount);
+    }
+
+    public void updatePassword(UUID accountId,
+                               UUID sessionId,
+                               UpdatePasswordRequest updatePasswordInfo) throws NotFoundLocalizedException, ForbiddenLocalizedException {
+        Account account = getAccount(accountId);
+
+        if (!passwordEncoder.matches(updatePasswordInfo.getCurrentPassword(), account.getPassword())) {
+            throw new ForbiddenLocalizedException(ForbiddenLocalizedError.BAD_ACCOUNT_CREDENTIALS);
+        }
+
+        account.setPassword(passwordEncoder.encode(updatePasswordInfo.getNewPassword()));
+
+        accountRepository.save(account);
+
+        sessionService.leaveAllAccountSessionsExceptCurrent(accountId, sessionId);
     }
 }

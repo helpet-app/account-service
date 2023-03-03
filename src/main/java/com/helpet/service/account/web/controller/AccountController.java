@@ -3,6 +3,7 @@ package com.helpet.service.account.web.controller;
 import com.helpet.security.jwt.JwtPayloadExtractor;
 import com.helpet.service.account.service.AccountService;
 import com.helpet.service.account.store.model.Account;
+import com.helpet.service.account.web.dto.request.UpdatePasswordRequest;
 import com.helpet.service.account.web.mapper.AccountMapper;
 import com.helpet.web.response.ResponseBody;
 import com.helpet.web.response.SuccessfulResponseBody;
@@ -10,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -34,6 +33,16 @@ public class AccountController {
         UUID accountId = JwtPayloadExtractor.extractSubject(jwtAuthenticationToken.getToken());
         Account account = accountService.getAccount(accountId);
         ResponseBody responseBody = new SuccessfulResponseBody<>(accountMapper.map(account));
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+    }
+
+    @PatchMapping("/change-password")
+    public ResponseEntity<ResponseBody> getAccount(@RequestBody UpdatePasswordRequest updatePasswordRequest,
+                                                   JwtAuthenticationToken jwtAuthenticationToken) {
+        UUID accountId = JwtPayloadExtractor.extractSubject(jwtAuthenticationToken.getToken());
+        UUID sessionId = JwtPayloadExtractor.extractSessionId(jwtAuthenticationToken.getToken());
+        accountService.updatePassword(accountId, sessionId, updatePasswordRequest);
+        ResponseBody responseBody = new SuccessfulResponseBody<>();
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 }
