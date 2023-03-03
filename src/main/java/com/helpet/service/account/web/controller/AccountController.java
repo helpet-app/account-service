@@ -3,7 +3,7 @@ package com.helpet.service.account.web.controller;
 import com.helpet.security.jwt.JwtPayloadExtractor;
 import com.helpet.service.account.service.AccountService;
 import com.helpet.service.account.store.model.Account;
-import com.helpet.service.account.web.dto.request.UpdatePasswordRequest;
+import com.helpet.service.account.web.dto.request.ChangePasswordRequest;
 import com.helpet.service.account.web.mapper.AccountMapper;
 import com.helpet.web.response.ResponseBody;
 import com.helpet.web.response.SuccessfulResponseBody;
@@ -37,11 +37,11 @@ public class AccountController {
     }
 
     @PatchMapping("/change-password")
-    public ResponseEntity<ResponseBody> getAccount(@RequestBody UpdatePasswordRequest updatePasswordRequest,
+    public ResponseEntity<ResponseBody> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest,
                                                    JwtAuthenticationToken jwtAuthenticationToken) {
         UUID accountId = JwtPayloadExtractor.extractSubject(jwtAuthenticationToken.getToken());
         UUID sessionId = JwtPayloadExtractor.extractSessionId(jwtAuthenticationToken.getToken());
-        accountService.updatePassword(accountId, sessionId, updatePasswordRequest);
+        accountService.changePassword(accountId, sessionId, changePasswordRequest);
         ResponseBody responseBody = new SuccessfulResponseBody<>();
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }

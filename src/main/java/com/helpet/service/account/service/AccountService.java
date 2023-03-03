@@ -10,7 +10,7 @@ import com.helpet.service.account.store.model.Account;
 import com.helpet.service.account.store.model.Role;
 import com.helpet.service.account.store.repository.AccountRepository;
 import com.helpet.service.account.web.dto.request.SignUpRequest;
-import com.helpet.service.account.web.dto.request.UpdatePasswordRequest;
+import com.helpet.service.account.web.dto.request.ChangePasswordRequest;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -74,16 +74,16 @@ public class AccountService {
         return accountRepository.save(newAccount);
     }
 
-    public void updatePassword(UUID accountId,
+    public void changePassword(UUID accountId,
                                UUID sessionId,
-                               UpdatePasswordRequest updatePasswordInfo) throws NotFoundLocalizedException, ForbiddenLocalizedException {
+                               ChangePasswordRequest changePasswordInfo) throws NotFoundLocalizedException, ForbiddenLocalizedException {
         Account account = getAccount(accountId);
 
-        if (!passwordEncoder.matches(updatePasswordInfo.getCurrentPassword(), account.getPassword())) {
+        if (!passwordEncoder.matches(changePasswordInfo.getCurrentPassword(), account.getPassword())) {
             throw new ForbiddenLocalizedException(ForbiddenLocalizedError.BAD_ACCOUNT_CREDENTIALS);
         }
 
-        account.setPassword(passwordEncoder.encode(updatePasswordInfo.getNewPassword()));
+        account.setPassword(passwordEncoder.encode(changePasswordInfo.getNewPassword()));
 
         accountRepository.save(account);
 
