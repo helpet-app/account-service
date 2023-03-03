@@ -31,7 +31,7 @@ public class AuthConfig {
     @Autowired
     @Bean
     public UserDetailsService userDetailsService(AccountRepository accountRepository) throws UsernameNotFoundException {
-        return username -> accountRepository.findAccountByUsername(username)
+        return username -> accountRepository.findAccountByUsernameIgnoreCase(username)
                                             .orElseThrow(() -> new UsernameNotFoundException("Account with username '" + username + "' does not exist"));
     }
 }
