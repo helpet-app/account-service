@@ -1,31 +1,30 @@
 spring:
   application:
     name: account-service
+  profiles:
+    active:
+      - eureka-client
+      - microservice
   cloud:
     config:
-      discovery:
-        enabled: true
-        service-id: config-server
       fail-fast: true
       retry:
         max-attempts: 20
-        initial-interval: 20000
-        max-interval: 10000
+        max-interval: 15000
+        initial-interval: 10000
+      username: ${CONFIG_SERVER_USERNAME}
+      password: ${CONFIG_SERVER_PASSWORD}
+  config:
+    import: optional:configserver:${CONFIG_URI}
 #  data:
 #    redis:
 #      password: from Config Server: Vault
+#      host: from Config Server: Vault
+#      port: from Config Server: Vault
 #  datasource:
 #    url: from Config Server: Vault
 #    password: from Config Server: Vault
 #    username: from Config Server: Vault
-
-eureka:
-  client:
-    enabled: true
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: ${EUREKA_SERVER_URI}
 
 #auth:
 #  jwt:
