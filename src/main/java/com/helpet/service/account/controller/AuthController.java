@@ -1,11 +1,11 @@
-package com.helpet.service.account.web.controller;
+package com.helpet.service.account.controller;
 
 import com.helpet.security.jwt.JwtPayloadExtractor;
+import com.helpet.service.account.dto.request.SignInRequest;
 import com.helpet.service.account.service.AuthService;
-import com.helpet.service.account.web.dto.request.RefreshTokenRequest;
-import com.helpet.service.account.web.dto.request.SignInRequest;
-import com.helpet.service.account.web.dto.request.SignUpRequest;
-import com.helpet.service.account.web.dto.response.TokenResponse;
+import com.helpet.service.account.dto.request.RefreshTokenRequest;
+import com.helpet.service.account.dto.request.SignUpRequest;
+import com.helpet.service.account.dto.response.TokenResponse;
 import com.helpet.web.response.ResponseBody;
 import com.helpet.web.response.SuccessfulResponseBody;
 import jakarta.servlet.http.HttpServletRequest;

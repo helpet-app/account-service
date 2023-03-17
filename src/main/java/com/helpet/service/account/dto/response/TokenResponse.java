@@ -1,4 +1,4 @@
-package com.helpet.service.account.web.dto.response;
+package com.helpet.service.account.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

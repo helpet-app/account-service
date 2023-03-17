@@ -1,4 +1,4 @@
-package com.helpet.service.account.web.dto.request;
+package com.helpet.service.account.dto.request;
 
 import lombok.Data;
 

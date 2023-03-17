@@ -3,7 +3,7 @@ package com.helpet.service.account.service;
 import com.helpet.service.account.config.JwtConstants;
 import com.helpet.service.account.store.model.Account;
 import com.helpet.service.account.store.model.Session;
-import com.helpet.service.account.web.dto.response.TokenResponse;
+import com.helpet.service.account.dto.response.TokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
