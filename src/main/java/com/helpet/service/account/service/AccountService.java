@@ -68,7 +68,7 @@ public class AccountService {
                                     .email(signUpInfo.getEmail().toLowerCase())
                                     .username(signUpInfo.getUsername().toLowerCase())
                                     .password(passwordEncoder.encode(signUpInfo.getPassword()))
-                                    .roles(Set.of(Role.USER))
+                                    .roles(Set.of(Role.USER.name()))
                                     .build();
 
         return accountRepository.save(newAccount);

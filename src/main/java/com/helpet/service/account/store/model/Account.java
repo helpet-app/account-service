@@ -60,14 +60,14 @@ public class Account implements UserDetails {
     private Boolean isBlocked = false;
 
     @Enumerated(EnumType.STRING)
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "account_roles", joinColumns = @JoinColumn(name = "account_id"))
     @Column(name = "role")
-    private Set<Role> roles = new HashSet<>();
+    private Set<String> roles = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.name())).toList();
+        return roles.stream().map(SimpleGrantedAuthority::new).toList();
     }
 
     @Override
