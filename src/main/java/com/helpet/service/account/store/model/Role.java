@@ -5,5 +5,6 @@ public enum Role {
     MODERATOR,
     CLINIC_REPRESENTATIVE,
     VET,
-    USER
+    USER,
+    CONTENT_MANAGER
 }
