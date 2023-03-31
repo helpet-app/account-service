@@ -18,10 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "accounts", indexes = {
-        @Index(name = "accounts_email_key", columnList = "email", unique = true),
-        @Index(name = "accounts_username_key", columnList = "username", unique = true)
-})
+@Table(name = "accounts")
 public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -43,6 +40,9 @@ public class Account implements UserDetails {
     @NotNull
     @Column(name = "email", nullable = false, length = Integer.MAX_VALUE)
     private String email;
+
+    @Column(name = "avatar_url", length = Integer.MAX_VALUE)
+    private String avatarUrl;
 
     @Builder.Default
     @NotNull
