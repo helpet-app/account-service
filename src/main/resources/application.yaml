@@ -5,6 +5,8 @@ spring:
     active:
       - eureka-client
       - microservice
+      - jpa
+      - docs
   cloud:
     config:
       fail-fast: true
