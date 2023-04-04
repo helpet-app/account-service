@@ -27,10 +27,17 @@ services:
       - .account-service.env
     depends_on:
       - account-service-database
-      - redis
+      - account-service-redis
+    networks:
+      - helpet-network
+    restart: always
 
 volumes:
   account-service-database-data:
     driver: local
   account-service-redis-data:
     driver: local
+
+networks:
+  helpet-network:
+    external: true
