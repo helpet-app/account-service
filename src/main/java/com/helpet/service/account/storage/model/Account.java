@@ -1,4 +1,4 @@
-package com.helpet.service.account.store.model;
+package com.helpet.service.account.storage.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

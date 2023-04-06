@@ -2,9 +2,9 @@ package com.helpet.service.account.controller;
 
 import com.helpet.security.jwt.JwtPayloadExtractor;
 import com.helpet.service.account.dto.request.ChangePasswordRequest;
-import com.helpet.service.account.service.AccountService;
-import com.helpet.service.account.store.model.Account;
 import com.helpet.service.account.mapper.AccountMapper;
+import com.helpet.service.account.service.AccountService;
+import com.helpet.service.account.storage.model.Account;
 import com.helpet.web.response.ResponseBody;
 import com.helpet.web.response.SuccessfulResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;

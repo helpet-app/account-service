@@ -1,6 +1,6 @@
 package com.helpet.service.account.config;
 
-import com.helpet.service.account.store.repository.AccountRepository;
+import com.helpet.service.account.storage.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

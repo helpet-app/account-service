@@ -1,8 +1,8 @@
 package com.helpet.service.account.service;
 
 import com.helpet.service.account.config.JwtConstants;
-import com.helpet.service.account.store.model.Account;
-import com.helpet.service.account.store.model.Session;
+import com.helpet.service.account.storage.model.Account;
+import com.helpet.service.account.storage.model.Session;
 import com.helpet.service.account.dto.response.TokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

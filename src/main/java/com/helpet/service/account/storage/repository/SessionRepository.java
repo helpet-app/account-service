@@ -1,6 +1,6 @@
-package com.helpet.service.account.store.repository;
+package com.helpet.service.account.storage.repository;
 
-import com.helpet.service.account.store.model.Session;
+import com.helpet.service.account.storage.model.Session;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

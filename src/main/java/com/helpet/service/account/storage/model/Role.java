@@ -1,4 +1,4 @@
-package com.helpet.service.account.store.model;
+package com.helpet.service.account.storage.model;
 
 public enum Role {
     ADMIN,

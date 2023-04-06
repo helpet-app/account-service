@@ -3,7 +3,7 @@ package com.helpet.service.account.controller;
 import com.helpet.security.jwt.JwtPayloadExtractor;
 import com.helpet.service.account.mapper.SessionMapper;
 import com.helpet.service.account.service.SessionService;
-import com.helpet.service.account.store.model.Session;
+import com.helpet.service.account.storage.model.Session;
 import com.helpet.web.response.ResponseBody;
 import com.helpet.web.response.SuccessfulResponseBody;
 import org.springframework.http.HttpStatus;

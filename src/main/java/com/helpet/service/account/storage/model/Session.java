@@ -1,4 +1,4 @@
-package com.helpet.service.account.store.model;
+package com.helpet.service.account.storage.model;
 
 import com.helpet.service.account.util.InstantToStringConverter;
 import jakarta.persistence.Convert;

@@ -1,6 +1,6 @@
-package com.helpet.service.account.store.repository;
+package com.helpet.service.account.storage.repository;
 
-import com.helpet.service.account.store.model.Account;
+import com.helpet.service.account.storage.model.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
