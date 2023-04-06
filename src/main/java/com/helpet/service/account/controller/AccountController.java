@@ -2,6 +2,7 @@ package com.helpet.service.account.controller;
 
 import com.helpet.security.jwt.JwtPayloadExtractor;
 import com.helpet.service.account.dto.request.ChangePasswordRequest;
+import com.helpet.service.account.dto.request.UpdateAccountRequest;
 import com.helpet.service.account.mapper.AccountMapper;
 import com.helpet.service.account.service.AccountService;
 import com.helpet.service.account.storage.model.Account;
@@ -33,6 +34,15 @@ public class AccountController {
     public ResponseEntity<ResponseBody> getAccount(JwtAuthenticationToken jwtAuthenticationToken) {
         UUID accountId = JwtPayloadExtractor.extractSubject(jwtAuthenticationToken.getToken());
         Account account = accountService.getAccount(accountId);
+        ResponseBody responseBody = new SuccessfulResponseBody<>(accountMapper.map(account));
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+    }
+
+    @PutMapping
+    public ResponseEntity<ResponseBody> updateAccount(@RequestBody @Valid UpdateAccountRequest updateAccountRequest,
+                                                      JwtAuthenticationToken jwtAuthenticationToken) {
+        UUID accountId = JwtPayloadExtractor.extractSubject(jwtAuthenticationToken.getToken());
+        Account account = accountService.updateAccount(accountId, updateAccountRequest);
         ResponseBody responseBody = new SuccessfulResponseBody<>(accountMapper.map(account));
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }

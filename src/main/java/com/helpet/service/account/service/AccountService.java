@@ -5,6 +5,7 @@ import com.helpet.exception.ForbiddenLocalizedException;
 import com.helpet.exception.NotFoundLocalizedException;
 import com.helpet.service.account.dto.request.ChangePasswordRequest;
 import com.helpet.service.account.dto.request.SignUpRequest;
+import com.helpet.service.account.dto.request.UpdateAccountRequest;
 import com.helpet.service.account.service.error.ConflictLocalizedError;
 import com.helpet.service.account.service.error.ForbiddenLocalizedError;
 import com.helpet.service.account.service.error.NotFoundLocalizedError;
@@ -72,6 +73,19 @@ public class AccountService {
                                     .build();
 
         return accountRepository.save(newAccount);
+    }
+
+    public Account updateAccount(UUID accountId, UpdateAccountRequest updateAccountInfo) {
+        Account account = getAccount(accountId);
+
+        if (!account.getUsername().equals(updateAccountInfo.getUsername()) && accountExistsByUsername(updateAccountInfo.getUsername())) {
+            throw new ConflictLocalizedException(ConflictLocalizedError.USERNAME_IS_ALREADY_TAKEN);
+        }
+
+        account.setName(updateAccountInfo.getName());
+        account.setUsername(updateAccountInfo.getUsername());
+
+        return accountRepository.save(account);
     }
 
     public void changePassword(UUID accountId,
