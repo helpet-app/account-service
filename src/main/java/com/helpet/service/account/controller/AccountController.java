@@ -7,6 +7,7 @@ import com.helpet.service.account.service.AccountService;
 import com.helpet.service.account.storage.model.Account;
 import com.helpet.web.response.ResponseBody;
 import com.helpet.web.response.SuccessfulResponseBody;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class AccountController {
     }
 
     @PutMapping("/change-password")
-    public ResponseEntity<ResponseBody> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest,
+    public ResponseEntity<ResponseBody> changePassword(@RequestBody @Valid ChangePasswordRequest changePasswordRequest,
                                                        JwtAuthenticationToken jwtAuthenticationToken) {
         UUID accountId = JwtPayloadExtractor.extractSubject(jwtAuthenticationToken.getToken());
         UUID sessionId = JwtPayloadExtractor.extractSessionId(jwtAuthenticationToken.getToken());
