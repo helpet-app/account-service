@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@RequestMapping("/account/me")
+@RequestMapping("/account")
 @RestController
 public class AccountController {
     private final AccountService accountService;
@@ -47,7 +47,7 @@ public class AccountController {
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
-    @PutMapping("/change-password")
+    @PutMapping("/password")
     public ResponseEntity<ResponseBody> changePassword(@RequestBody @Valid ChangePasswordRequest changePasswordRequest,
                                                        JwtAuthenticationToken jwtAuthenticationToken) {
         UUID accountId = JwtPayloadExtractor.extractSubject(jwtAuthenticationToken.getToken());
