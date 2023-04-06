@@ -38,7 +38,7 @@ public class AccountController {
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
-    @PutMapping
+    @PatchMapping
     public ResponseEntity<ResponseBody> updateAccount(@RequestBody @Valid UpdateAccountRequest updateAccountRequest,
                                                       JwtAuthenticationToken jwtAuthenticationToken) {
         UUID accountId = JwtPayloadExtractor.extractSubject(jwtAuthenticationToken.getToken());
@@ -47,7 +47,7 @@ public class AccountController {
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
-    @PutMapping("/password")
+    @PatchMapping("/password")
     public ResponseEntity<ResponseBody> changePassword(@RequestBody @Valid ChangePasswordRequest changePasswordRequest,
                                                        JwtAuthenticationToken jwtAuthenticationToken) {
         UUID accountId = JwtPayloadExtractor.extractSubject(jwtAuthenticationToken.getToken());
