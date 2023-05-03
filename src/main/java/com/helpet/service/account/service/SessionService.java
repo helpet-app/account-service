@@ -77,7 +77,14 @@ public class SessionService {
         return sessionRepository.save(session);
     }
 
-    public void deleteSession(Session session) {
-        sessionRepository.delete(session);
+    public Session extendSession(UUID sessionId, HttpServletRequest httpRequest, Long expiresIn) {
+        Session session = getSession(sessionId);
+
+        session.setIp(HttpRequestUtils.getRemoteIp(httpRequest));
+        session.setUserAgent(HttpRequestUtils.getUserAgent(httpRequest));
+        session.setExpiresIn(expiresIn);
+        session.setIssuedAt(Instant.now());
+
+        return sessionRepository.save(session);
     }
 }
