@@ -1,6 +1,5 @@
 package com.helpet.service.account.service;
 
-import com.helpet.exception.ForbiddenLocalizedException;
 import com.helpet.exception.NotFoundLocalizedException;
 import com.helpet.service.account.service.error.NotFoundLocalizedError;
 import com.helpet.service.account.storage.model.Session;
@@ -37,7 +36,7 @@ public class SessionService {
             throw new NotFoundLocalizedException(NotFoundLocalizedError.ACCOUNT_WITH_GIVEN_ID_DOES_NOT_EXIST);
         }
 
-        return sessionRepository.findAllByAccountId(accountId);
+        return sessionRepository.findAllByAccountIdOrderByIssuedAtDesc(accountId);
     }
 
     public Session getAccountSession(UUID accountId, UUID sessionId) throws NotFoundLocalizedException {
@@ -47,7 +46,7 @@ public class SessionService {
 
         Session session = getSession(sessionId);
         if (!Objects.equals(session.getAccountId(), accountId)) {
-            throw new ForbiddenLocalizedException(NotFoundLocalizedError.ACCOUNT_DOES_NOT_HAVE_THIS_SESSION);
+            throw new NotFoundLocalizedException(NotFoundLocalizedError.ACCOUNT_DOES_NOT_HAVE_THIS_SESSION);
         }
 
         return session;
@@ -76,5 +75,9 @@ public class SessionService {
                                  .build();
 
         return sessionRepository.save(session);
+    }
+
+    public void deleteSession(Session session) {
+        sessionRepository.delete(session);
     }
 }

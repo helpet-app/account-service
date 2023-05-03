@@ -1,14 +1,14 @@
 package com.helpet.service.account.service;
 
-import com.helpet.exception.ConflictLocalizedException;
-import com.helpet.exception.NotFoundLocalizedException;
+import com.helpet.exception.*;
 import com.helpet.security.jwt.JwtPayloadExtractor;
-import com.helpet.service.account.storage.model.Account;
-import com.helpet.service.account.storage.model.Session;
 import com.helpet.service.account.dto.request.RefreshTokenRequest;
 import com.helpet.service.account.dto.request.SignInRequest;
 import com.helpet.service.account.dto.request.SignUpRequest;
 import com.helpet.service.account.dto.response.TokenResponse;
+import com.helpet.service.account.service.error.UnauthorizedLocalizedError;
+import com.helpet.service.account.storage.model.Account;
+import com.helpet.service.account.storage.model.Session;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -68,7 +68,7 @@ public class AuthService {
     }
 
     public TokenResponse refreshToken(HttpServletRequest httpServletRequest,
-                                      RefreshTokenRequest refreshTokenInfo) throws NotFoundLocalizedException {
+                                      RefreshTokenRequest refreshTokenInfo) throws UnauthorizedLocalizedException {
         BearerTokenAuthenticationToken authenticationToken = new BearerTokenAuthenticationToken(refreshTokenInfo.getRefreshToken());
 
         Authentication authentication = jwtRefreshTokenAuthenticationProvider.authenticate(authenticationToken);
@@ -78,13 +78,18 @@ public class AuthService {
         UUID accountId = JwtPayloadExtractor.extractSubject(jwt);
         UUID sessionId = JwtPayloadExtractor.extractSessionId(jwt);
 
-        sessionService.leaveAccountSession(accountId, sessionId);
+        try {
+            Session session = sessionService.getSession(sessionId);
+            sessionService.deleteSession(session);
 
-        Account account = accountService.getAccount(accountId);
+            Account account = accountService.getAccount(accountId);
 
-        Session newSession = sessionService.createSession(accountId, httpServletRequest, tokenService.getJwtConstants().getRefreshExpiresIn());
+            Session newSession = sessionService.createSession(accountId, httpServletRequest, tokenService.getJwtConstants().getRefreshExpiresIn());
 
-        return tokenService.generateTokenResponse(account, newSession);
+            return tokenService.generateTokenResponse(account, newSession);
+        } catch (Exception ex) {
+            throw new UnauthorizedLocalizedException(UnauthorizedLocalizedError.TOKEN_IS_INVALID);
+        }
     }
 
     public void signOut(UUID accountId, UUID sessionId) throws NotFoundLocalizedException {
