@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface SessionRepository extends CrudRepository<Session, UUID> {
-    List<Session> findAllByAccountId(UUID accountId);
+    List<Session> findAllByAccountIdOrderByIssuedAtDesc(UUID accountId);
 }
