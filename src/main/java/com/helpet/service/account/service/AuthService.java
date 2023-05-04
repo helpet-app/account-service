@@ -79,11 +79,13 @@ public class AuthService {
         UUID sessionId = JwtPayloadExtractor.extractSessionId(jwt);
 
         try {
-            Session session = sessionService.extendSession(sessionId, httpServletRequest, tokenService.getJwtConstants().getRefreshExpiresIn());
+            sessionService.deleteSession(sessionId);
 
             Account account = accountService.getAccount(accountId);
 
-            return tokenService.generateTokenResponse(account, session);
+            Session newSession = sessionService.createSession(account.getId(), httpServletRequest, tokenService.getJwtConstants().getRefreshExpiresIn());
+
+            return tokenService.generateTokenResponse(account, newSession);
         } catch (LocalizedException ex) {
             throw new UnauthorizedLocalizedException(UnauthorizedLocalizedError.TOKEN_IS_INVALID);
         }
