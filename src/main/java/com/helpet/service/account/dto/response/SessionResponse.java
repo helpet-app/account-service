@@ -9,8 +9,6 @@ import java.util.UUID;
 public class SessionResponse {
     private UUID id;
 
-    private UUID accountId;
-
     private String ip;
 
     private String userAgent;
